@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { theme } from "./../../utils/theme";
 import { CountDown } from "../../components/CountDown";
 import { RoundedButton } from "../../components/RoundedButton";
+import { ProgressBar } from "react-native-paper";
 
 interface TimerProps {
   focusSubject: string;
@@ -10,15 +11,26 @@ interface TimerProps {
 
 export const Timer = ({ focusSubject }: TimerProps) => {
   const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(1);
+
+  const onProgress = (progress: number) => {
+    setProgress(progress);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.countDownContainer}>
-        <CountDown isPaused={!isStarted} />
+        <CountDown isPaused={!isStarted} onProgress={onProgress} minutes={2} />
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Focusing on:</Text>
         <Text style={styles.task}>{focusSubject}</Text>
       </View>
+      <ProgressBar
+        color="#5E84E2"
+        style={{ height: 10, margin: theme.spacing.md, borderRadius: 5 }}
+        progress={progress}
+      />
       <View style={styles.btnWrapper}>
         <RoundedButton
           size={150}

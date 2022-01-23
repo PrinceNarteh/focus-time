@@ -5,6 +5,7 @@ import { theme } from "../utils/theme";
 interface CountDownProps {
   minutes?: number;
   isPaused?: boolean;
+  onProgress: (time: number) => void;
 }
 
 const minutesToMilliseconds = (mins: number) => mins * 1000 * 60;
@@ -13,6 +14,7 @@ const formatTime = (time: number) => (time < 10 ? `0${time}` : time);
 export const CountDown = ({
   minutes = 20,
   isPaused = false,
+  onProgress,
 }: CountDownProps) => {
   const [millis, setMillis] = useState<number>(minutesToMilliseconds(minutes));
   const internal = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -26,6 +28,7 @@ export const CountDown = ({
         return time;
       }
       const timeLeft = time - 1000;
+      onProgress(timeLeft / minutesToMilliseconds(minutes));
       return timeLeft;
     });
   };
