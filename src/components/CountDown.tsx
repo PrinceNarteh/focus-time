@@ -31,10 +31,12 @@ export const CountDown = ({
   };
 
   useEffect(() => {
+    if (isPaused) return;
+
     internal.current = setInterval(countDown, 1000);
 
     return () => clearInterval(internal.current as any);
-  }, []);
+  }, [isPaused]);
 
   return (
     <View>
