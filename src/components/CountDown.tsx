@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { theme } from "../utils/theme";
 
 interface CountDownProps {
@@ -15,9 +15,26 @@ export const CountDown = ({
   isPaused = false,
 }: CountDownProps) => {
   const [millis, setMillis] = useState<number>(minutesToMilliseconds(minutes));
+  const internal = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mins = Math.floor(millis / 1000 / 60) % 60;
   const secs = Math.floor(millis / 1000) % 60;
+
+  const countDown = () => {
+    setMillis((time) => {
+      if (time === 0) {
+        return time;
+      }
+      const timeLeft = time - 1000;
+      return timeLeft;
+    });
+  };
+
+  useEffect(() => {
+    internal.current = setInterval(countDown, 1000);
+
+    return () => clearInterval(internal.current as any);
+  }, []);
 
   return (
     <View>
