@@ -9,11 +9,12 @@ import { useKeepAwake } from "expo-keep-awake";
 
 interface TimerProps {
   focusSubject: string;
+  onTimerEnd: () => void;
 }
 
 const DEFAULT_TIME = 0.1;
 
-export const Timer = ({ focusSubject }: TimerProps) => {
+export const Timer = ({ focusSubject, onTimerEnd }: TimerProps) => {
   useKeepAwake();
   const [minutes, setMinutes] = useState<number>(DEFAULT_TIME);
   const [isStarted, setIsStarted] = useState<boolean>(false);
@@ -24,7 +25,7 @@ export const Timer = ({ focusSubject }: TimerProps) => {
       const interval = setInterval(() => Vibration.vibrate(), 1000);
       setTimeout(() => clearInterval(interval), 10000);
     } else {
-      Vibration.vibrate([1000, 2000, 1000, 3000]);
+      Vibration.vibrate([500, 1000, 600, 1200]);
     }
   };
 
@@ -33,6 +34,7 @@ export const Timer = ({ focusSubject }: TimerProps) => {
     setMinutes(DEFAULT_TIME);
     setProgress(1);
     setIsStarted(false);
+    onTimerEnd();
   };
 
   useEffect(() => {
@@ -71,6 +73,12 @@ export const Timer = ({ focusSubject }: TimerProps) => {
         <RoundedButton
           size={150}
           title={isStarted ? "Pause" : "Start"}
+          onPress={() => setIsStarted(!isStarted)}
+        />
+        <RoundedButton
+          size={50}
+          title="Cancel"
+          textStyle={{ fontSize: 10 }}
           onPress={() => setIsStarted(!isStarted)}
         />
       </View>

@@ -33,9 +33,10 @@ const styles = (size: number) =>
       justifyContent: "center",
       borderColor: theme.colors.white,
       borderWidth: 2,
+      margin: 10,
     },
     text: {
       color: theme.colors.white,
-      fontSize: size / 3,
+      fontSize: size / 3.5,
     },
   });
