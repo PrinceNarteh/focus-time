@@ -7,19 +7,17 @@ import { ProgressBar } from "react-native-paper";
 import { Timing } from "./Timing";
 import { useKeepAwake } from "expo-keep-awake";
 import { useFocus } from "../../hooks/useFocus";
+import { useTimer } from "../../hooks/useTimer";
+import { TimerAction } from "../../context/timer/timer.action";
 
 interface TimerProps {
   onTimerEnd: () => void;
 }
 
-const DEFAULT_TIME = 0.1;
-
 export const Timer = ({ onTimerEnd }: TimerProps) => {
   useKeepAwake();
-  const [minutes, setMinutes] = useState<number>(DEFAULT_TIME);
-  const [isStarted, setIsStarted] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(1);
-  const { focusSubject } = useFocus();
+  const { minutes, isStarted, progress, dispatch } = useTimer();
+  const { focusSubject, setFocusSubject } = useFocus();
 
   const vibrate = () => {
     if (Platform.OS === "ios") {
@@ -32,31 +30,18 @@ export const Timer = ({ onTimerEnd }: TimerProps) => {
 
   const onEnd = () => {
     vibrate();
-    setMinutes(DEFAULT_TIME);
-    setProgress(1);
-    setIsStarted(false);
+    dispatch(TimerAction.reset());
     onTimerEnd();
   };
 
   useEffect(() => {
-    setProgress(progress);
+    dispatch(TimerAction.setProgress(progress));
   }, [progress]);
-
-  useEffect(() => {
-    setMinutes(minutes);
-    setProgress(1);
-    setIsStarted(false);
-  }, [minutes]);
 
   return (
     <View style={styles.container}>
       <View style={styles.countDownContainer}>
-        <CountDown
-          isPaused={!isStarted}
-          onProgress={setProgress}
-          minutes={minutes}
-          onEnd={onEnd}
-        />
+        <CountDown isPaused={!isStarted} minutes={minutes} onEnd={onEnd} />
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Focusing on:</Text>
@@ -68,19 +53,19 @@ export const Timer = ({ onTimerEnd }: TimerProps) => {
         progress={progress}
       />
       <View style={styles.btnWrapper}>
-        <Timing onChangeTime={setMinutes} />
+        <Timing />
       </View>
       <View style={styles.btnWrapper}>
         <RoundedButton
           size={150}
           title={isStarted ? "Pause" : "Start"}
-          onPress={() => setIsStarted(!isStarted)}
+          onPress={() => dispatch(TimerAction.setIsStarted(isStarted))}
         />
         <RoundedButton
           size={50}
           title="Cancel"
           textStyle={{ fontSize: 10 }}
-          onPress={() => setIsStarted(!isStarted)}
+          onPress={() => setFocusSubject(null)}
         />
       </View>
     </View>

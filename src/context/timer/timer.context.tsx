@@ -1,8 +1,24 @@
-import { createContext } from "react";
+import { createContext, useReducer } from "react";
+import { timerReducer, initialState } from "./timer.reducer";
 
-const DEFAULT_TIME = 0.1;
-export const TimerContext = createContext<number>(DEFAULT_TIME);
+export interface ITimerContext {
+  minutes: number;
+  isStarted: boolean;
+  progress: number;
+  dispatch: React.Dispatch<any>;
+}
+
+export const TimerContext = createContext<ITimerContext>(initialState);
 
 export const TimerProvider = ({ children }: { children: React.ReactNode }) => {
-  return <TimerContext.Provider value={5}>{children}</TimerContext.Provider>;
+  const [{ minutes, progress, isStarted }, dispatch] = useReducer(
+    timerReducer,
+    initialState
+  );
+
+  return (
+    <TimerContext.Provider value={{ minutes, progress, isStarted, dispatch }}>
+      {children}
+    </TimerContext.Provider>
+  );
 };

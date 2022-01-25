@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { TimerProvider } from "../timer/timer.context";
 
 export const FocusContext = createContext<{
   focusSubject: string | null;
@@ -10,7 +11,7 @@ export const FocusProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <FocusContext.Provider value={{ focusSubject, setFocusSubject }}>
-      {children}
+      <TimerProvider>{children}</TimerProvider>
     </FocusContext.Provider>
   );
 };

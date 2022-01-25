@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { theme } from "../utils/theme";
+import { useTimer } from "../hooks/useTimer";
+import { TimerAction } from "../context/timer/timer.action";
 
 interface CountDownProps {
   minutes?: number;
   isPaused?: boolean;
-  onProgress: (time: number) => void;
   onEnd: () => void;
 }
 
@@ -15,9 +16,9 @@ const formatTime = (time: number) => (time < 10 ? `0${time}` : time);
 export const CountDown = ({
   minutes,
   isPaused = false,
-  onProgress,
   onEnd,
 }: CountDownProps) => {
+  const { dispatch } = useTimer();
   const [millis, setMillis] = useState<number>(0);
   const internal = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,7 +34,11 @@ export const CountDown = ({
           return time;
         }
         const timeLeft = time - 1000;
-        onProgress(timeLeft / minutesToMilliseconds(!minutes ? 0 : minutes));
+        dispatch(
+          TimerAction.setProgress(
+            timeLeft / minutesToMilliseconds(!minutes ? 0 : minutes)
+          )
+        );
         return timeLeft;
       });
     };
