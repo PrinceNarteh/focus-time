@@ -6,9 +6,7 @@ export const FocusContext = createContext<{
 }>({ focusSubject: null, setFocusSubject: () => {} });
 
 export const FocusProvider = ({ children }: { children: React.ReactNode }) => {
-  const [focusSubject, setFocusSubject] = useState<string | null>(
-    "God Is Good"
-  );
+  const [focusSubject, setFocusSubject] = useState<string | null>(null);
 
   return (
     <FocusContext.Provider value={{ focusSubject, setFocusSubject }}>
