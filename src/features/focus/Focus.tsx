@@ -2,14 +2,12 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import { RoundedButton } from "../../components/RoundedButton";
+import { useFocus } from "../../hooks/useFocus";
 import { theme } from "../../utils/theme";
 
-interface FocusProps {
-  addSubject: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-export const Focus = ({ addSubject }: FocusProps) => {
+export const Focus = () => {
   const [subject, setSubject] = useState<string | null>(null);
+  const { setFocusSubject } = useFocus();
 
   return (
     <View style={styles.container}>
@@ -24,7 +22,7 @@ export const Focus = ({ addSubject }: FocusProps) => {
           <RoundedButton
             title="+"
             size={50}
-            onPress={() => addSubject(subject)}
+            onPress={() => setFocusSubject(subject)}
           />
         </View>
       </View>

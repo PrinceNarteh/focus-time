@@ -1,27 +1,33 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { StyleSheet, Text, View, Platform } from "react-native";
+import { FocusProvider } from "./src/context/focus/focus.context";
 import { Focus } from "./src/features/focus/Focus";
 import { Timer } from "./src/features/timer/Timer";
 import { theme } from "./src/utils/theme";
+import { useFocus } from "./src/hooks/useFocus";
 
 export default function App() {
-  const [focusSubject, setFocusSubject] = useState<string | null>("Read Bible");
+  const { focusSubject, setFocusSubject } = useFocus();
+
+  console.log(focusSubject);
 
   return (
-    <View style={styles.container}>
-      {focusSubject ? (
-        <Timer
-          focusSubject={focusSubject}
-          onTimerEnd={() => setFocusSubject(null)}
-        />
-      ) : (
-        <Focus addSubject={setFocusSubject} />
-      )}
-      <StatusBar style="auto" />
+    <FocusProvider>
+      <View style={styles.container}>
+        {focusSubject ? (
+          <Timer
+            focusSubject={focusSubject}
+            onTimerEnd={() => setFocusSubject(null)}
+          />
+        ) : (
+          <Focus />
+        )}
+        <StatusBar style="auto" />
 
-      <Text>{focusSubject}</Text>
-    </View>
+        <Text>{focusSubject}</Text>
+      </View>
+    </FocusProvider>
   );
 }
 
