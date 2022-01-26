@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { AsyncStorage, Platform, StyleSheet, View } from "react-native";
 import { Focus } from "../features/focus/Focus";
 import { FocusHistory } from "../features/focus/FocusHistory";
 import { Timer } from "../features/timer/Timer";
@@ -27,9 +27,37 @@ export default function HomeScreen() {
     setFocusHistory([...focusHistory, { subject, status }]);
   };
 
+  const saveFocusHistory = async () => {
+    try {
+      AsyncStorage.setItem("focusHistory", JSON.stringify(focusHistory));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const loadFocusHistory = async () => {
+    try {
+      const history = await AsyncStorage.getItem("focusHistory");
+
+      if (history && JSON.parse(history)) {
+        setFocusHistory(JSON.parse(history));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onClear = () => {
     setFocusHistory([]);
   };
+
+  useEffect(() => {
+    loadFocusHistory();
+  }, []);
+
+  useEffect(() => {
+    saveFocusHistory();
+  }, [focusHistory]);
 
   return (
     <View style={styles.container}>
