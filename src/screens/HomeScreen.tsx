@@ -27,7 +27,9 @@ export default function HomeScreen() {
     setFocusHistory([...focusHistory, { subject, status }]);
   };
 
-  const onClear = () => {};
+  const onClear = () => {
+    setFocusHistory([]);
+  };
 
   return (
     <View style={styles.container}>

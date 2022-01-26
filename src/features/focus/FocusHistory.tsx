@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, FlatList, SafeAreaView } from "react-native";
 import React from "react";
 import { theme } from "../../utils/theme";
+import { RoundedButton } from "../../components/RoundedButton";
 
 interface IFocusHistory {
   subject: string;
@@ -19,7 +20,7 @@ const historyItem = ({
   item: IFocusHistory;
   index: number;
 }) => {
-  return <Text style={styles.historyItem(item.status)}>{item.subject}</Text>;
+  return <Text style={styles(item.status).historyItem}>{item.subject}</Text>;
 };
 
 export const FocusHistory = ({ focusHistory, onClear }: FocusHistoryProps) => {
@@ -33,13 +34,21 @@ export const FocusHistory = ({ focusHistory, onClear }: FocusHistoryProps) => {
         <View>
           {!!focusHistory.length && (
             <>
-              <Text style={styles.title}>Things we've focus on.</Text>
+              <Text style={styles().title}>Things we've focus on.</Text>
               <FlatList
                 style={{ flex: 1 }}
                 contentContainerStyle={{ flex: 1, alignItems: "center" }}
                 data={focusHistory}
                 renderItem={historyItem}
+                keyExtractor={(item) => item.subject}
               />
+              <View style={styles().clearContainer}>
+                <RoundedButton
+                  size={75}
+                  title="Clear"
+                  onPress={() => onClear()}
+                />
+              </View>
             </>
           )}
         </View>
@@ -48,13 +57,18 @@ export const FocusHistory = ({ focusHistory, onClear }: FocusHistoryProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  historyItem: (status: number) => ({
-    color: status === 1 ? "green" : "red",
-    fontSize: theme.fontSizes.md,
-  }),
-  title: {
-    color: theme.colors.white,
-    fontSize: theme.fontSizes.lg,
-  },
-});
+const styles = (status?: number) =>
+  StyleSheet.create({
+    historyItem: {
+      color: status === 1 ? "green" : "red",
+      fontSize: theme.fontSizes.md,
+    },
+    title: {
+      color: theme.colors.white,
+      fontSize: theme.fontSizes.lg,
+    },
+    clearContainer: {
+      alignItems: "center",
+      padding: theme.spacing.md,
+    },
+  });

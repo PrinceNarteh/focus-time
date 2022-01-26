@@ -32,6 +32,7 @@ export const Timer = ({ onTimerEnd, addFocusHistory }: TimerProps) => {
   const onEnd = () => {
     vibrate();
     dispatch(TimerAction.reset());
+    setFocusSubject(null);
     onTimerEnd();
   };
 
