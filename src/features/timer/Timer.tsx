@@ -12,9 +12,10 @@ import { TimerAction } from "../../context/timer/timer.action";
 
 interface TimerProps {
   onTimerEnd: () => void;
+  addFocusHistory: (subject: string, status: number) => void;
 }
 
-export const Timer = ({ onTimerEnd }: TimerProps) => {
+export const Timer = ({ onTimerEnd, addFocusHistory }: TimerProps) => {
   useKeepAwake();
   const { minutes, isStarted, progress, dispatch } = useTimer();
   const { focusSubject, setFocusSubject } = useFocus();
@@ -65,7 +66,12 @@ export const Timer = ({ onTimerEnd }: TimerProps) => {
           size={50}
           title="Cancel"
           textStyle={{ fontSize: 10 }}
-          onPress={() => setFocusSubject(null)}
+          onPress={() => {
+            if (focusSubject) {
+              addFocusHistory(focusSubject, 2);
+            }
+            setFocusSubject(null);
+          }}
         />
       </View>
     </View>

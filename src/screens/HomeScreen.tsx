@@ -1,17 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { Focus } from "../features/focus/Focus";
 import { Timer } from "../features/timer/Timer";
 import { useFocus } from "../hooks/useFocus";
 import { theme } from "../utils/theme";
 
+interface IFocusHistory {
+  subject: string;
+  status: number;
+}
+
+const STATUS = {
+  COMPLETED: 1,
+  CANCELLED: 2,
+};
+
 export default function HomeScreen() {
   const { focusSubject, setFocusSubject } = useFocus();
+  const [focusHistory, setFocusHistory] = useState<IFocusHistory[]>([]);
+
+  const addFocusHistorySubjectWithStatus = (
+    subject: string,
+    status: number
+  ) => {
+    setFocusHistory([...focusHistory, { subject, status }]);
+  };
 
   return (
     <View style={styles.container}>
       {focusSubject ? (
-        <Timer onTimerEnd={() => setFocusSubject(null)} />
+        <Timer
+          onTimerEnd={() => {
+            addFocusHistorySubjectWithStatus(focusSubject, STATUS.COMPLETED);
+            () => setFocusSubject(null);
+          }}
+          addFocusHistory={addFocusHistorySubjectWithStatus}
+        />
       ) : (
         <Focus />
       )}
