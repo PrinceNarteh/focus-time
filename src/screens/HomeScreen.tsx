@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { Focus } from "../features/focus/Focus";
+import { FocusHistory } from "../features/focus/FocusHistory";
 import { Timer } from "../features/timer/Timer";
 import { useFocus } from "../hooks/useFocus";
 import { theme } from "../utils/theme";
@@ -26,6 +27,8 @@ export default function HomeScreen() {
     setFocusHistory([...focusHistory, { subject, status }]);
   };
 
+  const onClear = () => {};
+
   return (
     <View style={styles.container}>
       {focusSubject ? (
@@ -37,7 +40,10 @@ export default function HomeScreen() {
           addFocusHistory={addFocusHistorySubjectWithStatus}
         />
       ) : (
-        <Focus />
+        <>
+          <Focus />
+          <FocusHistory focusHistory={focusHistory} onClear={() => onClear} />
+        </>
       )}
     </View>
   );
